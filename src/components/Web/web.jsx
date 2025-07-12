@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useParams } from "react-router-dom"
 import {
   ChakraProvider,
@@ -40,6 +40,10 @@ import MenuFilters from "../components/MenuFilters"
 import MenuSection from "../components/MenuSection"
 import RestaurantServices from "../components/RestaurantServices"
 import ReviewsSection from "../components/ReviewsSection"
+import FoodCategorySection from "../components/FoodCategorySection"
+import LoadingAnimation from "../components/LoadingAnimation"
+import PageTransition from "../components/PageTransition"
+
 // Enhanced mock data with more realistic content
 const mockRestaurants = [
   {
@@ -146,34 +150,6 @@ const mockRestaurants = [
         rating: 4.2,
         prepTime: "5 min",
         reviews: [],
-      },
-       {
-        id: 7,
-        name: "Biryani",
-        price: 199,
-        veg: false,
-        category: "mains",
-        image: "/placeholder.svg?height=200&width=300",
-        description: "Fragrant basmati rice layered with tender meat and aromatic spices",
-        preferences: ["spicy"],
-        rating: 4.8,
-        isPopular: true,
-        prepTime: "25-30 min",
-        reviews: [{ id: 1, user: "Neha M.", rating: 5, comment: "Best biryani in the city!", date: "2024-01-14" }],
-      },
-       {
-        id: 8,
-        name: "Biryani",
-        price: 199,
-        veg: false,
-        category: "mains",
-        image: "/placeholder.svg?height=200&width=300",
-        description: "Fragrant basmati rice layered with tender meat and aromatic spices",
-        preferences: ["spicy"],
-        rating: 4.8,
-        isPopular: true,
-        prepTime: "25-30 min",
-        reviews: [{ id: 1, user: "Neha M.", rating: 5, comment: "Best biryani in the city!", date: "2024-01-14" }],
       },
     ],
   },
@@ -647,6 +623,14 @@ const Homepage = () => {
         </Container>
       </Box>
 
+      {/* Food Category Section */}
+      <FoodCategorySection
+        onCategorySelect={(category) => {
+          console.log("Selected category:", category)
+          // You can add filtering logic here
+        }}
+      />
+
       {/* Main Content */}
       <Container maxW="container.xl" py={16}>
         <Grid templateColumns={{ base: "1fr", lg: "300px 1fr" }} gap={8}>
@@ -910,7 +894,7 @@ const RestaurantDetail = () => {
         </Box>
 
         {/* Reviews Section */}
-        {/* <ReviewsSection reviews={enhancedReviews} restaurantId={restaurant.id} restaurantName={restaurant.name} /> */}
+        <ReviewsSection reviews={enhancedReviews} restaurantId={restaurant.id} restaurantName={restaurant.name} />
       </VStack>
     </Container>
   )
@@ -1468,29 +1452,42 @@ const Footer = () => {
 }
 
 // Main App Component
-const Web = () => {
+const App = () => {
+  const [showLoading, setShowLoading] = useState(true)
+
+  useEffect(() => {
+    // Hide loading animation after 3 seconds
+    const timer = setTimeout(() => {
+      setShowLoading(false)
+    }, 3000)
+    return () => clearTimeout(timer)
+  }, [])
+
   return (
     <ChakraProvider theme={theme}>
       <CartProvider>
         <Router>
-          <Box minH="100vh">
-            <Header />
-            <ShoppingCart />
-            <Box as="main">
-              <Routes>
-                <Route path="/" element={<Homepage />} />
-                <Route path="/restaurant/:id" element={<RestaurantDetail />} />
-                <Route path="/add-restaurant" element={<AddRestaurant />} />
-                <Route path="/premium-plans" element={<PremiumPlans />} />
-                <Route path="/contact" element={<Contact />} />
-              </Routes>
+          <PageTransition>
+            <LoadingAnimation isVisible={showLoading} onComplete={() => setShowLoading(false)} />
+            <Box minH="100vh">
+              <Header />
+              <ShoppingCart />
+              <Box as="main">
+                <Routes>
+                  <Route path="/" element={<Homepage />} />
+                  <Route path="/restaurant/:id" element={<RestaurantDetail />} />
+                  <Route path="/add-restaurant" element={<AddRestaurant />} />
+                  <Route path="/premium-plans" element={<PremiumPlans />} />
+                  <Route path="/contact" element={<Contact />} />
+                </Routes>
+              </Box>
+              <Footer />
             </Box>
-            <Footer />
-          </Box>
+          </PageTransition>
         </Router>
       </CartProvider>
     </ChakraProvider>
   )
 }
 
-export default Web
+export default App
