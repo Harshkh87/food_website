@@ -1,16 +1,9 @@
-// import React from 'react'
-import Web from './components/Web/web'
-import Routing from './New/routing'
-import Pge from './New2/app/page'
-// import Routing from './New/routing'
-// import Web from './components/web/web'
+import Page from './app/page.jsx';
 
 function App() {
   return (
     <>
-    {/* <Web/> */}
-    {/* <Routing/> */}
-    <Pge/>
+    <Page/>
     </>
   )
 }

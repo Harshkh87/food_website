@@ -20,7 +20,7 @@ import Footer from "../components/Footer";
 import LoadingScreen from "../components/LoadingScreen";
 import LoginSignup from "../components/LoginSignup";
 
-export default function App() {
+export default function Page() {
   const [cartItems, setCartItems] = useState([]);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isPageLoading, setIsPageLoading] = useState(false);
